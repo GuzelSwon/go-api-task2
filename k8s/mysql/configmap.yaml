@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-initdb-config
+data:
+  init.sql: |
+    CREATE DATABASE IF NOT EXISTS entities;
+    USE entities;
+    CREATE TABLE IF NOT EXISTS entities(id INT NOT NULL,slug VARCHAR(30) NOT NULL,url VARCHAR(60) NOT NULL,title VARCHAR(80)  NOT NULL,content VARCHAR(1000)  NOT NULL,image VARCHAR(60)  NOT NULL,thumbnail VARCHAR(60)  NOT NULL,status VARCHAR(60)  NOT NULL,category VARCHAR(60)  NOT NULL,published_at VARCHAR(60)  NOT NULL,updated_at VARCHAR(60)  NOT NULL,user_id VARCHAR(60)  NOT NULL,PRIMARY KEY(id));
