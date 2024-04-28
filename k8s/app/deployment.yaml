@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: go-api-task-guzel
+  name: go-api-task-guzel
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: go-api-task-guzel
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: go-api-task-guzel
+    spec:
+      containers:
+        - image: localhost:5000/go-api-task-guzel:0.3.4
+          name: go-api-task-guzel-k8s
+          ports:
+            - containerPort: 80
+          resources: {}
+          env:
+            - name: ENVIRONMENT
+              value: k8s
+            - name: DBPASS
+              valueFrom:
+                secretKeyRef:
+                  key: rootpassword
+                  name: mysql-password
+            - name: DBNAME
+              valueFrom:
+                configMapKeyRef:
+                  key: dbname
+                  name: go-api-task-guzel-cm
+            - name: DBUSER
+              valueFrom:
+                configMapKeyRef:
+                  key: dbusername
+                  name: go-api-task-guzel-cm
+            - name: SERVER_PORT
+              valueFrom:
+                configMapKeyRef:
+                  key: port
+                  name: go-api-task-guzel-cm
+            - name: DBHOST
+              valueFrom:
+                configMapKeyRef:
+                  key: dbhostname
+                  name: go-api-task-guzel-cm
+            - name: URL
+              valueFrom:
+                configMapKeyRef:
+                  key: url
+                  name: go-api-task-guzel-cm
+            - name: OTELCOL_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  key: otelcolserver
+                  name: go-api-task-guzel-cm
