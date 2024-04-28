@@ -24,8 +24,6 @@ spec:
           env:
             - name: ENVIRONMENT
               value: k8s
-            - name: NEW_ENV
-              value: some_env
             - name: DBPASS
               valueFrom:
                 secretKeyRef:
