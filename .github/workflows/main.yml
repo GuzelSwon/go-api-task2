@@ -34,13 +34,13 @@ jobs:
       - name: Install dependencies
         uses: actions/checkout@v3
       - run: | 
-          echo "Working Directory: $(pwd)"
-          echo "dirs $(ls)"
           cd app/
           go mod download
       - name: Test with Go
         uses: actions/checkout@v3
-      - run: go test ./app/tests -json > TestResults-${{ matrix.go-version }}.json
+      - run: |
+          go cd app/tests
+          go test -json > TestResults-${{ matrix.go-version }}.json
       - name: Upload Go test results
         uses: actions/upload-artifact@v4
         with:
