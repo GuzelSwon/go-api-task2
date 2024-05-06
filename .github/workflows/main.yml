@@ -33,6 +33,8 @@ jobs:
           go-version: '1.22.2'
       - name: Install dependencies
         run: | 
+          echo "Working Directory: $(pwd)"
+          echo "dirs $(ls)"
           cd app/
           go mod download
       - name: Test with Go
