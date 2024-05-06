@@ -20,7 +20,7 @@ spec:
         app: go-api-task-guzel
     spec:
       containers:
-        - image: localhost:5000/go-api-task-guzel:0.3.3
+        - image: {{.Values.image.repository}}:{{.Values.image.tag}}
           name: go-api-task-guzel-k8s
           ports:
             - containerPort: 80
