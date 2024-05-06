@@ -1,5 +1,5 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
 metadata:
   labels:
     app: go-api-task-guzel
@@ -9,14 +9,18 @@ spec:
   selector:
     matchLabels:
       app: go-api-task-guzel
-  strategy: {}
+  strategy:
+    blueGreen:
+      activeService: go-api-task-guzel-service-active
+      previewService: go-api-task-guzel-service-preview
+      autoPromotionEnabled: false
   template:
     metadata:
       labels:
         app: go-api-task-guzel
     spec:
       containers:
-        - image: localhost:5000/go-api-task-guzel:0.3.4
+        - image: localhost:5000/go-api-task-guzel:0.3.3
           name: go-api-task-guzel-k8s
           ports:
             - containerPort: 80
