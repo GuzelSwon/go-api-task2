@@ -47,7 +47,7 @@ jobs:
           echo "Before modification:"
           cat values.yaml
           
-          sed -i '/^image:/,/^  tag:/{s/^  tag: .*/  tag: "$RUN_NUMBER"/}' values.yaml
+          sed -i '/^image:/,/^  tag:/{s/^  tag: .*/  tag: "'$RUN_NUMBER'"/}' values.yaml
           
           # Print values.yaml for debugging after changes
           echo "After modification:"
