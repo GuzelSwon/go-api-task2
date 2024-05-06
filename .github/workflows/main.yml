@@ -73,7 +73,7 @@ jobs:
           go-version: '1.22.2'
       - name: Install dependencies
         run: | 
-          cd app
+          cd ./app/
           go mod download
       - name: Test with Go
         run: go test ./app/tests -json > TestResults-${{ matrix.go-version }}.json
