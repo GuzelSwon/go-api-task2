@@ -33,7 +33,7 @@ jobs:
           with:
             repository: GuzelSwon/go-api-task2.git
             token: ${{ secrets.GIT_TOKEN }}
-            ref: branch-to-pull
+            ref: main
         - name: modify the image
           run: |
             git config user.email ${{ secrets.email }}
