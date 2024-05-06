@@ -74,6 +74,7 @@ jobs:
       - name: Install dependencies
         run: | 
           echo "Working Directory: $(pwd)"
+          echo "dirs $(ls)"
           cd ./app/
           go mod download
       - name: Test with Go
