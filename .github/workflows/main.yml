@@ -1,0 +1,105 @@
+name: GitOps Pipeline 
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+    build_and_push_image:
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout Code from repository
+                uses: actions/checkout@v2
+            -   name: Login to Docker Hub
+                uses: docker/login-action@v1
+                with:
+                    username: ${{ secrets.DOCKERHUB_USERNAME }}
+                    password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+            -   name: Build and push Docker image
+                uses: docker/build-push-action@v2
+                with:
+                    context: .
+                    push: true
+                    tags: guzelkhuziakhmetova/go-api-task:${{ github.run_number }}
+
+    modify_image_tag:
+      needs: build_and_push_image
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+          name: Changing the deployment of git repo
+          with:
+            repository: repo-link
+            token: ${{ secrets.GIT_TOKEN }}
+            ref: branch-to-pull
+        - name: modify the image
+          run: |
+            git config user.email ${{ secrets.email }}
+            git config user.name ${{ secrets.name }}
+            echo "Working Directory: $(pwd)"
+    
+            # Navigate to the specific Helm chart directory
+            cd helm-chart
+    
+            # Print values.yaml for debugging before changes
+            echo "Before modification:"
+            cat values.yaml
+    
+            sed -i '/^image:/,/^  tag:/{s/^  tag: .*/  tag: "$RUN_NUMBER"/}' values.yaml
+    
+            # Print values.yaml for debugging after changes
+            echo "After modification:"
+            cat values.yaml
+    
+            git add values.yaml
+            git commit -m "Update image tag by Github Actions Job change manifest: ${{ github.run_number }}"
+            git push origin main
+          env:
+            GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+            GIT_PASSWORD: ${{ secrets.GIT_TOKEN }}
+            RUN_NUMBER: ${{ github.run_number }}
+
+    perform_rollback:
+      runs-on: ubuntu-latest
+      if: failure()
+      steps:
+        - uses: actions/checkout@v3
+          name: Changing the deployment of git repo
+          with:
+            repository: repo-link
+            token: ${{ secrets.GIT_TOKEN }}
+            ref: branch-to-pull
+        - run: |
+            echo "Perform Rollback because Tests Failed"
+            git config user.email ${{ secrets.email }}
+            git config user.name ${{ secrets.name }}
+            echo "Working Directory: $(pwd)"
+    
+            # Navigate to the specific Helm chart directory
+            cd helm-chart
+    
+            # Print values.yaml for debugging before changes
+            echo "Before modification:"
+            cat values.yaml
+    
+            sed -i '/^image:/,/^  tag:/{s/^  tag: .*/  tag: "$PREVIOUS_RUN_NUMBER"/}' values.yaml
+    
+            # Print values.yaml for debugging after changes
+            echo "After modification:"
+            cat values.yaml
+    
+            git add values.yaml
+            git commit -m "Rolled back image tag by Github Actions Job change manifest: $PREVIOUS_RUN_NUMBER"
+            git push origin main
+            
+          env:
+            PREVIOUS_RUN_NUMBER: ${{ vars.PREVIOUS_RUN_NUMBER }}
+            GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+            GIT_PASSWORD: ${{ secrets.GIT_TOKEN }}
+            RUN_NUMBER: ${{ github.run_number }}
+            ENVIRONMENT: ${{ vars.ENVIRONMENT }}
+
+
+      
