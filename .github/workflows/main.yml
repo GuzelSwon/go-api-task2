@@ -23,6 +23,42 @@ jobs:
             context: ./app/
             push: true
             tags: guzelkhuziakhmetova/go-api-task:${{ github.run_number }}
+  modify_image_tag:
+    needs: build_and_push_image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        name: Changing the deployment of git repo
+        with:
+          repository: GuzelSwon/go-api-task2-k8s-deployment
+          token: ${{ secrets.GIT_TOKEN }}
+          ref: main
+      - name: modify the image
+        run: |
+          git config user.email ${{ secrets.email }}
+          git config user.name ${{ secrets.name }}
+          echo "Working Directory: $(pwd)"
+  
+          # Navigate to the specific Helm chart directory
+          cd helm-chart
+  
+          # Print values.yaml for debugging before changes
+          echo "Before modification:"
+          cat values.yaml
+  
+          sed -i '/^image:/,/^  tag:/{s/^  tag: .*/  tag: "dev-'$RUN_NUMBER'"/}' values.yaml
+  
+          # Print values.yaml for debugging after changes
+          echo "After modification:"
+          cat values.yaml
+  
+          git add values.yaml
+          git commit -m "Update image tag by Github Actions Job change manifest: ${{ github.run_number }}"
+          git push origin dev
+        env:
+          GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+          GIT_PASSWORD: ${{ secrets.GIT_TOKEN }}
+          RUN_NUMBER: ${{ github.run_number }}
 
   test_application:
     runs-on: ubuntu-latest
