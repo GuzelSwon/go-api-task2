@@ -46,7 +46,7 @@ jobs:
           echo "Before modification:"
           cat values.yaml
   
-          sed -i '/^image:/,/^  tag:/{s/^  tag: .*/  tag: "dev-'$RUN_NUMBER'"/}' values.yaml
+          sed -i '/^image:/,/^  tag:/{s/^  tag: .*/  tag: "'$RUN_NUMBER'"/}' values.yaml
   
           # Print values.yaml for debugging after changes
           echo "After modification:"
@@ -54,7 +54,7 @@ jobs:
   
           git add values.yaml
           git commit -m "Update image tag by Github Actions Job change manifest: ${{ github.run_number }}"
-          git push origin dev
+          git push origin main
         env:
           GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
           GIT_PASSWORD: ${{ secrets.GIT_TOKEN }}
