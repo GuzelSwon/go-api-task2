@@ -30,7 +30,7 @@ jobs:
           with:
             context: ./app/
             push: true
-            tags: guzelkhuziakhmetova/go-api-task:$RUN_NUMBER
+            tags: guzelkhuziakhmetova/go-api-task:${{ env.RUN_NUMBER }}
 
   modify_image_tag:
     name: Modify image tag
