@@ -140,6 +140,8 @@ jobs:
     runs-on: ubuntu-latest
     if: success()
     steps:
+      - name: Checkout Code from repository
+        uses: actions/checkout@v2
       - run: |
           terraform init -backend-config "secret_key=$OBJECT_STORAGE_SECRET_KEY" -backend-config "access_key=$OBJECT_STORAGE_ACCESS_KEY"
           terraform apply -var "service_account_token=$SERVICE_ACCOUNT_TOKEN" -var "auth_github_username=$AUTH_GITHUB_USRNAME" -var "auth_github_token=$AUTH_GITHUB_TOKEN" -var "object_storage_secret_key=$OBJECT_STORAGE_SECRET_KEY" -var "object_storage_access_key=$OBJECT_STORAGE_ACCESS_KEY"
