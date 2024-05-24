@@ -103,11 +103,11 @@ jobs:
     if: failure()
     steps:
       - uses: actions/checkout@v3
-        name: Changing the deployment of git repo
+        name: Rollback main branch
         with:
-          repository: repo-link
+          repository: GuzelSwon/go-api-task2-k8s-deployment
           token: ${{ env.AUTH_GITHUB_TOKEN }}
-          ref: branch-to-pull
+          ref: main
       - run: |
           echo "Perform Rollback because Tests Failed"
           git config user.email $GIT_EMAIL
@@ -140,12 +140,6 @@ jobs:
     runs-on: ubuntu-latest
     if: success()
     steps:
-      - uses: actions/checkout@v3
-        name: Deploy main branch
-        with:
-          repository: GuzelSwon/go-api-task2-k8s-deployment
-          token: ${{ env.AUTH_GITHUB_TOKEN }}
-          ref: main
       - run: |
           terraform init -backend-config "secret_key=$OBJECT_STORAGE_SECRET_KEY" -backend-config "access_key=$OBJECT_STORAGE_ACCESS_KEY"
           terraform apply -var "service_account_token=$SERVICE_ACCOUNT_TOKEN" -var "auth_github_username=$AUTH_GITHUB_USRNAME" -var "auth_github_token=$AUTH_GITHUB_TOKEN" -var "object_storage_secret_key=$OBJECT_STORAGE_SECRET_KEY" -var "object_storage_access_key=$OBJECT_STORAGE_ACCESS_KEY"
@@ -153,3 +147,4 @@ jobs:
           OBJECT_STORAGE_SECRET_KEY: ${{ secrets.OBJECT_STORAGE_SECRET_KEY }}
           OBJECT_STORAGE_ACCESS_KEY: ${{ secrets.OBJECT_STORAGE_ACCESS_KEY }}
           SERVICE_ACCOUNT_TOKEN: ${{ secrets.SERVICE_ACCOUNT_TOKEN }}
+        name: Deploy app
