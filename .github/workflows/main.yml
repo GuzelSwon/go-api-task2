@@ -41,7 +41,7 @@ jobs:
         name: Changing the deployment of git repo
         with:
           repository: GuzelSwon/go-api-task2-k8s-deployment
-          token: $AUTH_GITHUB_TOKEN
+          token: ${{ env.AUTH_GITHUB_TOKEN }}
           ref: main
       - name: modify the image
         run: |
@@ -89,8 +89,8 @@ jobs:
       - name: Upload Go test results
         uses: actions/upload-artifact@v4
         with:
-          name: Go-results-$RUN_NUMBER
-          path: TestResults-$RUN_NUMBER.json
+          name: Go-results-${{ env.RUN_NUMBER }}
+          path: TestResults-${{ env.RUN_NUMBER }}.json
       - name: Verify tests
         run: | 
           if grep FAIL TestResults-$RUN_NUMBER.json; then exit 1
@@ -106,7 +106,7 @@ jobs:
         name: Changing the deployment of git repo
         with:
           repository: repo-link
-          token: $AUTH_GITHUB_TOKEN
+          token: ${{ env.AUTH_GITHUB_TOKEN }}
           ref: branch-to-pull
       - run: |
           echo "Perform Rollback because Tests Failed"
@@ -144,7 +144,7 @@ jobs:
         name: Deploy main branch
         with:
           repository: GuzelSwon/go-api-task2-k8s-deployment
-          token: $AUTH_GITHUB_TOKEN
+          token: ${{ env.AUTH_GITHUB_TOKEN }}
           ref: main
       - run: |
           terraform init -backend-config "secret_key='$RUN_NUMBER'" -backend-config "access_key=$(object_storage_access_key)"
