@@ -10,7 +10,6 @@ env:
   AUTH_GITHUB_TOKEN: ${{ secrets.AUTH_GITHUB_TOKEN }}
   GIT_EMAIL: "guzelkhuz@gmail.com"
   GIT_NAME: "guzel.khuziakhmetova"
-  ENVIRONMENT: ${{ vars.ENVIRONMENT }}
 
 jobs:
   build_and_push_image:
@@ -45,7 +44,6 @@ jobs:
           ref: main
       - name: modify the image
         run: |
-          echo $ENVIRONMENT
           git config user.email $GIT_EMAIL
           git config user.name $GIT_NAME
           echo "Working Directory: $(pwd)"
@@ -137,12 +135,16 @@ jobs:
   deploy:
     name: Deploy app
     needs: test_application
+    environment: production
     runs-on: ubuntu-latest
     if: success()
     steps:
       - name: Checkout Code from repository
         uses: actions/checkout@v2
       - run: |
+          echo ENVIRONMENT=${{ vars.ENVIRONMENT }} >> .env
+          cat .env
+
           terraform init -backend-config "secret_key=$OBJECT_STORAGE_SECRET_KEY" -backend-config "access_key=$OBJECT_STORAGE_ACCESS_KEY"
           terraform apply -auto-approve -var "service_account_token=$SERVICE_ACCOUNT_TOKEN" -var "auth_github_username=$AUTH_GITHUB_USRNAME" -var "auth_github_token=$AUTH_GITHUB_TOKEN" -var "object_storage_secret_key=$OBJECT_STORAGE_SECRET_KEY" -var "object_storage_access_key=$OBJECT_STORAGE_ACCESS_KEY"
         env:
