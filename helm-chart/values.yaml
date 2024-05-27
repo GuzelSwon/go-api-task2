@@ -8,7 +8,7 @@ image:
   repository: hub.docker.com/guzelkhuziakhmetova/go-api-task
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "90"
+  tag: "120"
 
 imagePullSecrets: []
 nameOverride: ""

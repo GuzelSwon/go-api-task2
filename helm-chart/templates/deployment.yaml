@@ -9,11 +9,7 @@ spec:
   selector:
     matchLabels:
       app: go-api-task-guzel
-  strategy:
-    blueGreen:
-      activeService: go-api-task-guzel-service-active
-      previewService: go-api-task-guzel-service-preview
-      autoPromotionEnabled: false
+  strategy: {}
   template:
     metadata:
       labels:
