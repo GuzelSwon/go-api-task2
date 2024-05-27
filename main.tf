@@ -104,7 +104,7 @@ resource "kubectl_manifest" "argocd_go_api_app" {
   depends_on = [kubernetes_secret.repo_access, helm_release.argocd, stackit_ske_cluster.ske]
   yaml_body = templatefile("${path.module}/argocd_template.yaml", {
     github_repo_url = var.go_api_app_github_repo_url
-    helm_chart_path = "./helm-chart/"
+    helm_chart_path = "helm-chart/"
     environment = var.environment
     resource_name = "go-api-app"
 
@@ -113,12 +113,12 @@ resource "kubectl_manifest" "argocd_go_api_app" {
   })
 }
 
-resource "stackit_postgresql_instance" "postgres" {
-  name       = "example"
-  project_id = var.project_id
-}
-
-resource "stackit_postgresql_credential" "example" {
-  project_id  = "example"
-  instance_id = stackit_postgres_instance.postgres.id
+resource "kubectl_manifest" "argocd_mysql" {
+  depends_on = [helm_release.argocd, stackit_ske_cluster.ske]
+  yaml_body = templatefile("${path.module}/argocd_template.yaml", {
+    github_repo_url = var.go_api_app_github_repo_url
+    helm_chart_path = "bitnami/mysql/"
+    environment = var.environment
+    resource_name = "mysql"
+  })
 }

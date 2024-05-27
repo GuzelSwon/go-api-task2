@@ -24,7 +24,7 @@ variable "s3_bucket_name" {
 }
 variable "go_api_app_github_repo_url" {
   description = "Github repository URL of an application"
-  default = "https://github.com/GuzelSwon/go-api-task2-k8s-deployment.git"
+  default = "https://github.com/GuzelSwon/go-api-task2.git"
 }
 variable "bitnami_github_repo_url" {
   description = "Github repository URL of bitnami"

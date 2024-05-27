@@ -1,0 +1,11 @@
+apiVersion: v1
+data:
+  dbname: entities
+  dbusername: root
+  dbhostname: mysql.default.svc.cluster.local
+  url: https://jsonplaceholder.org/posts
+  port: "3306"
+  otelcolserver: jaeger-collector.default.svc.cluster.local:4317
+kind: ConfigMap
+metadata:
+  name: go-api-task-guzel-cm
