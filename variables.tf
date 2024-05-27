@@ -30,6 +30,10 @@ variable "bitnami_github_repo_url" {
   description = "Github repository URL of bitnami"
   default = "https://github.com/bitnami/charts.git"
 }
+variable "fluentbit_github_repo_url" {
+  description = "Github repository URL of bitnami"
+  default = "https://github.com/fluent/helm-charts.git"
+}
 variable "auth_github_username" {
   description = "Github repository URL of an application"
   default = "GuzelSwon"
