@@ -132,3 +132,13 @@ resource "kubectl_manifest" "argocd_fluentbit" {
     resource_name = "fluentbit"
   })
 }
+
+resource "kubectl_manifest" "argocd_otel" {
+  depends_on = [helm_release.argocd, stackit_ske_cluster.ske]
+  yaml_body = templatefile("${path.module}/argocd_template.yaml", {
+    github_repo_url = var.otel_github_repo_url
+    helm_chart_path = "charts/opentelemetry-collector"
+    environment = var.environment
+    resource_name = "otel"
+  })
+}
