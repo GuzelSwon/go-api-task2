@@ -34,3 +34,6 @@ variable "auth_github_token" {
   description = "Github repository URL of an application"
   sensitive = true
 }
+variable "environment" {
+  description = "Github environment value"
+}

@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: go-api-app-${ENVIRONMENT}
+  name: go-api-app-${environment}
   namespace: argocd
 spec:
   destination:
