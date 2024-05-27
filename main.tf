@@ -103,7 +103,8 @@ resource "stackit_secretsmanager_user" "secretsmanager_user" {
 resource "kubectl_manifest" "argocd_application" {
   depends_on = [kubernetes_secret.repo_access, helm_release.argocd, stackit_ske_cluster.ske]
   yaml_body = templatefile("${path.module}/argocd.yaml", {
-    github_repo_url       = var.github_repo_url
+    github_repo_url = var.github_repo_url
+    environment = var.environment
     secretsmanager_instance_id = stackit_secretsmanager_user.secretsmanager_user.instance_id
     secretsmanager_username = stackit_secretsmanager_user.secretsmanager_user.username
   })
