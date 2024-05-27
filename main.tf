@@ -39,7 +39,7 @@ resource "kubernetes_secret" "repo_access" {
   data = {
     "type"          = "git"
     "name"          = "deployment"
-    "url"           = var.github_repo_url
+    "url"           = var.go_api_app_github_repo_url
     "project"       = "default"
     "username"      = var.auth_github_username
     "password"      = var.auth_github_token
@@ -100,10 +100,24 @@ resource "stackit_secretsmanager_user" "secretsmanager_user" {
   write_enabled = false
 }
 
-resource "kubectl_manifest" "argocd_application" {
+resource "kubectl_manifest" "argocd_go_api_app" {
   depends_on = [kubernetes_secret.repo_access, helm_release.argocd, stackit_ske_cluster.ske]
-  yaml_body = templatefile("${path.module}/argocd.yaml", {
-    github_repo_url = var.github_repo_url
+  yaml_body = templatefile("${path.module}/argocd_template.yaml", {
+    github_repo_url = var.go_api_app_github_repo_url
+    helm_chart_path = "./helm-chart/"
+    environment = var.environment
+    resource_name = "go-api-app"
+
+    secretsmanager_instance_id = stackit_secretsmanager_user.secretsmanager_user.instance_id
+    secretsmanager_username = stackit_secretsmanager_user.secretsmanager_user.username
+  })
+}
+
+resource "kubectl_manifest" "argocd_mysql" {
+  depends_on = [kubernetes_secret.repo_access, helm_release.argocd, stackit_ske_cluster.ske]
+  yaml_body = templatefile("${path.module}/argocd_template.yaml", {
+    github_repo_url = var.bitnami_github_repo_url
+    helm_chart_path = "./charts/bitnami/mysql/"
     environment = var.environment
     secretsmanager_instance_id = stackit_secretsmanager_user.secretsmanager_user.instance_id
     secretsmanager_username = stackit_secretsmanager_user.secretsmanager_user.username
