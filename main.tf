@@ -113,13 +113,12 @@ resource "kubectl_manifest" "argocd_go_api_app" {
   })
 }
 
-resource "kubectl_manifest" "argocd_mysql" {
-  depends_on = [kubernetes_secret.repo_access, helm_release.argocd, stackit_ske_cluster.ske]
-  yaml_body = templatefile("${path.module}/argocd_template.yaml", {
-    github_repo_url = var.bitnami_github_repo_url
-    helm_chart_path = "./charts/bitnami/mysql/"
-    environment = var.environment
-    secretsmanager_instance_id = stackit_secretsmanager_user.secretsmanager_user.instance_id
-    secretsmanager_username = stackit_secretsmanager_user.secretsmanager_user.username
-  })
+resource "stackit_postgresql_instance" "postgres" {
+  name       = "example"
+  project_id = var.project_id
+}
+
+resource "stackit_postgresql_credential" "example" {
+  project_id  = "example"
+  instance_id = stackit_postgres_instance.postgres.id
 }
