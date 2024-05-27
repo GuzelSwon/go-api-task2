@@ -142,3 +142,13 @@ resource "kubectl_manifest" "argocd_otel" {
     resource_name = "otel"
   })
 }
+
+resource "kubectl_manifest" "argocd_prometheus" {
+  depends_on = [helm_release.argocd, stackit_ske_cluster.ske]
+  yaml_body = templatefile("${path.module}/argocd_template.yaml", {
+    github_repo_url = var.prometheus_github_repo_url
+    helm_chart_path = "charts/prometheus"
+    environment = var.environment
+    resource_name = "prometheus"
+  })
+}

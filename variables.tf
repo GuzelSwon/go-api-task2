@@ -38,6 +38,10 @@ variable "otel_github_repo_url" {
   description = "Github repository URL of bitnami"
   default = "https://github.com/open-telemetry/opentelemetry-helm-charts.git"
 }
+variable "prometheus_github_repo_url" {
+  description = "Github repository URL of bitnami"
+  default = "https://github.com/prometheus-community/helm-charts.git"
+}
 variable "auth_github_username" {
   description = "Github repository URL of an application"
   default = "GuzelSwon"
