@@ -19,4 +19,4 @@ spec:
       - values.yaml
       parameters:
       - name: "mysql.secretName"
-        value: "${mysql_secretname}"
+        value: "${postgresql_secretname}"

@@ -133,7 +133,7 @@ resource "kubectl_manifest" "argocd_go_api_app" {
 
     secretsmanager_instance_id = stackit_secretsmanager_user.secretsmanager_user.instance_id
     secretsmanager_username = stackit_secretsmanager_user.secretsmanager_user.username
-    mysql_secretname = var.mysql_secretname
+    postgresql_secretname = var.postgresql_secretname
   })
 }
 

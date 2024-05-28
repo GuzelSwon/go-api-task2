@@ -62,9 +62,9 @@ variable "registry_password" {
 variable "registry_email" {
   default = "guzelkhuz@gmail.com"
 }
-variable "mysql_secretname" {
+variable "postgresql_secretname" {
   description = "Secret name of mysql"
-  default = "mysql-password"
+  default = "postgresql-production"
 }
 variable "environment" {
   description = "Github environment value"
