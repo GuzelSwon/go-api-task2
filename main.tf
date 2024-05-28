@@ -164,7 +164,6 @@ resource "kubectl_manifest" "argocd_otel" {
     helm_chart_path = "charts/opentelemetry-collector"
     environment = var.environment
     resource_name = "otel"
-    mode = "daemon"
     logs_collector_enabled = true
     logs_collector_include_collector_logs = true
   })
