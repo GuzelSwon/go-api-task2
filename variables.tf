@@ -64,7 +64,7 @@ variable "registry_email" {
 }
 variable "mysql_secretname" {
   description = "Secret name of mysql"
-  default = "mysql-production"
+  default = "mysql-password-production"
 }
 variable "environment" {
   description = "Github environment value"
