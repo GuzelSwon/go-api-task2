@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ${resource_name}-${environment}
+  namespace: argocd
+spec:
+  destination:
+    namespace: default
+    server: "https://kubernetes.default.svc"
+  project: default
+  syncPolicy:
+    automated: {}
+  source:
+    repoURL: "${github_repo_url}"
+    targetRevision: main
+    path: ${helm_chart_path}
+    helm:
+      valueFiles:
+      - values.yaml
+      parameters:
+      - name: "mode"
+        value: "${mode}"
+      - name: "preset.logsCollection.enabled"
+        value: "${logs_collector_enabled}"
+      - name: "preset.logsCollection.includeCollectorLogs"
+        value: "${logs_collector_include_collector_logs}"
