@@ -100,9 +100,32 @@ resource "stackit_secretsmanager_user" "secretsmanager_user" {
   write_enabled = false
 }
 
+resource "kubernetes_secret" "dockerhub-secret" {
+  depends_on = [stackit_ske_cluster.ske]
+  metadata {
+    name      = "dockerhub-secret"
+    namespace = "default"
+  }
+ 
+  type = "kubernetes.io/dockerconfigjson"
+ 
+  data = {
+    ".dockerconfigjson" = jsonencode({
+      auths = {
+        "${var.registry_url}" = {
+          "username" = var.registry_username,
+          "password" = var.registry_password,
+          "email"    = var.registry_email
+          "auth"     = base64encode("${var.registry_username}:${var.registry_password}")
+        }
+      }
+    })
+  }
+}
+
 resource "kubectl_manifest" "argocd_go_api_app" {
-  depends_on = [kubernetes_secret.repo_access, helm_release.argocd, stackit_ske_cluster.ske]
-  yaml_body = templatefile("${path.module}/argocd_template.yaml", {
+  depends_on = [kubernetes_secret.dockerhub-secret, kubernetes_secret.repo_access, helm_release.argocd, stackit_ske_cluster.ske]
+  yaml_body = templatefile("${path.module}/argocd_go-api-app.yaml", {
     github_repo_url = var.go_api_app_github_repo_url
     helm_chart_path = "helm-chart"
     environment = var.environment
@@ -110,6 +133,7 @@ resource "kubectl_manifest" "argocd_go_api_app" {
 
     secretsmanager_instance_id = stackit_secretsmanager_user.secretsmanager_user.instance_id
     secretsmanager_username = stackit_secretsmanager_user.secretsmanager_user.username
+    mysql_secretname = var.mysql_secretname
   })
 }
 

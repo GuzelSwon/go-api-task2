@@ -50,6 +50,22 @@ variable "auth_github_token" {
   description = "Github repository URL of an application"
   sensitive = true
 }
+variable "registry_url" {
+  default = "docker.io"
+}
+variable "registry_username" {
+  default = "guzelkhuziakhmetova"
+}
+variable "registry_password" {
+  sensitive = true
+}
+variable "registry_email" {
+  default = "guzelkhuz@gmail.com"
+}
+variable "mysql_secretname" {
+  description = "Secret name of mysql"
+  default = "mysql-production"
+}
 variable "environment" {
   description = "Github environment value"
 }
