@@ -34,4 +34,4 @@
     - Use GitHub secrets to manage sensitive information and environment variables to handle different deployment environments (e.g., development, staging, production).
 
 11. **Integrate Terraform with ArgoCD for Kubernetes Management**
-    - Use Terraform to manage Kubernetes cluster resources and deploy these resources using ArgoCD to streamline the deployment process.
+    - Use Terraform to manage Kubernetes cluster resources and deploy these resources using ArgoCD to streamline the deployment process
