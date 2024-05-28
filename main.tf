@@ -125,7 +125,7 @@ resource "kubernetes_secret" "dockerhub-secret" {
 
 resource "kubectl_manifest" "argocd_go_api_app" {
   depends_on = [kubernetes_secret.dockerhub-secret, kubernetes_secret.repo_access, helm_release.argocd, stackit_ske_cluster.ske]
-  yaml_body = templatefile("${path.module}/argocd_go-api-app.yaml", {
+  yaml_body = templatefile("${path.module}/argocd_template.yaml", {
     github_repo_url = var.go_api_app_github_repo_url
     helm_chart_path = "helm-chart"
     environment = var.environment
@@ -133,7 +133,6 @@ resource "kubectl_manifest" "argocd_go_api_app" {
 
     secretsmanager_instance_id = stackit_secretsmanager_user.secretsmanager_user.instance_id
     secretsmanager_username = stackit_secretsmanager_user.secretsmanager_user.username
-    mysql_secretname = var.mysql_secretname
   })
 }
 
