@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/uptrace/opentelemetry-go-extra/otelgorm"
-	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"os"
 )
@@ -24,14 +24,13 @@ type EntitiesRepo struct {
 }
 
 func EntitiesDbDsn() string {
-	// return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true&loc=Local", "root", "password", "localhost", "3306", "entities")
-	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true&loc=Local", username, password, hostname, port, dbname)
+	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s", username, password, hostname, port, dbname)
 }
 
 func connectDB() *gorm.DB {
-	mysqlDbDsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/", username, password, hostname, port)
+	dbDsn := fmt.Sprintf("postgres://%s:%s@%s:%s/", username, password, hostname, port)
 
-	db := openDB(mysqlDbDsn)
+	db := openDB(dbDsn)
 	checkIfDbExists(db)
 	entitiesDb := openDB(callEntitiesDbDsn())
 	addOtelPlugin(entitiesDb)
@@ -46,7 +45,7 @@ func addOtelPlugin(db *gorm.DB) {
 }
 
 func openDB(dsn string) *gorm.DB {
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
 		logger.Info("Error connecting to database: error="+err.Error(),
