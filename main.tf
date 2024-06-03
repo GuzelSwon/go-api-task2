@@ -159,7 +159,7 @@ resource "kubectl_manifest" "argocd_fluentbit" {
 
 resource "kubectl_manifest" "argocd_otel_collector" {
   depends_on = [helm_release.argocd, stackit_ske_cluster.ske]
-  yaml_body = templatefile("${path.module}/argocd_otel.yaml", {
+  yaml_body = templatefile("${path.module}/argocd_otel_collector.yaml", {
     github_repo_url = var.otel_github_repo_url
     helm_chart_path = "charts/opentelemetry-collector"
     environment = var.environment
@@ -173,11 +173,12 @@ resource "kubectl_manifest" "argocd_otel_collector" {
 
 resource "kubectl_manifest" "argocd_otel_operator" {
   depends_on = [helm_release.argocd, stackit_ske_cluster.ske]
-  yaml_body = templatefile("${path.module}/argocd_template.yaml", {
+  yaml_body = templatefile("${path.module}/argocd_otel_operator.yaml", {
     github_repo_url = var.otel_github_repo_url
     helm_chart_path = "charts/opentelemetry-operator"
     environment = var.environment
     resource_name = "otel-operator"
+    image_repository = "otel/opentelemetry-collector-k8s"
   })
 }
 
