@@ -18,6 +18,8 @@ spec:
       valueFiles:
       - values.yaml
       parameters:
+      - name: "mode"
+        value: "${mode}"
       - name: "preset.logsCollection.enabled"
         value: "${logs_collector_enabled}"
       - name: "preset.logsCollection.includeCollectorLogs"
