@@ -20,7 +20,7 @@ spec:
       parameters:
       - name: "mode"
         value: "${mode}"
-      - name: "preset.logsCollection.enabled"
+      - name: "presets.logsCollection.enabled"
         value: "${logs_collector_enabled}"
-      - name: "preset.logsCollection.includeCollectorLogs"
+      - name: "presets.logsCollection.includeCollectorLogs"
         value: "${logs_collector_include_collector_logs}"
