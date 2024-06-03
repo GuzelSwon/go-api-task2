@@ -31,7 +31,7 @@ func connectDB() *gorm.DB {
 	dbDsn := fmt.Sprintf("postgres://%s:%s@%s:%s/", username, password, hostname, port)
 
 	db := openDB(dbDsn)
-	checkIfDbExists(db)
+	checkIfTableExists(db)
 	entitiesDb := openDB(callEntitiesDbDsn())
 	addOtelPlugin(entitiesDb)
 	return entitiesDb
@@ -55,9 +55,7 @@ func openDB(dsn string) *gorm.DB {
 	return db
 }
 
-func checkIfDbExists(db *gorm.DB) {
-	db.Exec("CREATE DATABASE IF NOT EXISTS entities;")
-	db.Exec("USE entities;")
+func checkIfTableExists(db *gorm.DB) {
 	db.Exec("CREATE TABLE IF NOT EXISTS entities(id INT NOT NULL,slug VARCHAR(30) NOT NULL,url VARCHAR(60) NOT NULL,title VARCHAR(80)  NOT NULL,content VARCHAR(1000)  NOT NULL,image VARCHAR(60)  NOT NULL,thumbnail VARCHAR(60)  NOT NULL,status VARCHAR(60)  NOT NULL,category VARCHAR(60)  NOT NULL,published_at VARCHAR(60)  NOT NULL,updated_at VARCHAR(60)  NOT NULL,user_id VARCHAR(60)  NOT NULL,PRIMARY KEY(id));")
 }
 
