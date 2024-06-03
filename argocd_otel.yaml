@@ -24,3 +24,5 @@ spec:
         value: "${logs_collector_enabled}"
       - name: "presets.logsCollection.includeCollectorLogs"
         value: "${logs_collector_include_collector_logs}"
+      - name: "image.repository"
+        value: "${image_repository}"

@@ -167,6 +167,7 @@ resource "kubectl_manifest" "argocd_otel" {
     mode = "daemonset"
     logs_collector_enabled = "true"
     logs_collector_include_collector_logs = "true"
+    image_repository = "otel/opentelemetry-collector-k8s"
   })
 }
 
