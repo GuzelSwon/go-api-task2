@@ -31,16 +31,20 @@ variable "bitnami_github_repo_url" {
   default = "https://github.com/bitnami/charts.git"
 }
 variable "fluentbit_github_repo_url" {
-  description = "Github repository URL of bitnami"
+  description = "Github repository URL of fluentbit"
   default = "https://github.com/fluent/helm-charts.git"
 }
 variable "otel_github_repo_url" {
-  description = "Github repository URL of bitnami"
+  description = "Github repository URL of Open Telemetry"
   default = "https://github.com/open-telemetry/opentelemetry-helm-charts.git"
 }
 variable "prometheus_github_repo_url" {
-  description = "Github repository URL of bitnami"
+  description = "Github repository URL of prometheus"
   default = "https://github.com/prometheus-community/helm-charts.git"
+}
+variable "jaeger_github_repo_url" {
+  description = "Github repository URL of jaeger"
+  default = "https://github.com/jaegertracing/helm-charts.git "
 }
 variable "auth_github_username" {
   description = "Github repository URL of an application"

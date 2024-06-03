@@ -157,17 +157,27 @@ resource "kubectl_manifest" "argocd_fluentbit" {
   })
 }
 
-resource "kubectl_manifest" "argocd_otel" {
+resource "kubectl_manifest" "argocd_otel_collector" {
   depends_on = [helm_release.argocd, stackit_ske_cluster.ske]
   yaml_body = templatefile("${path.module}/argocd_otel.yaml", {
     github_repo_url = var.otel_github_repo_url
     helm_chart_path = "charts/opentelemetry-collector"
     environment = var.environment
-    resource_name = "otel"
+    resource_name = "otel-collector"
     mode = "daemonset"
     logs_collector_enabled = "true"
     logs_collector_include_collector_logs = "true"
     image_repository = "otel/opentelemetry-collector-k8s"
+  })
+}
+
+resource "kubectl_manifest" "argocd_otel_operator" {
+  depends_on = [helm_release.argocd, stackit_ske_cluster.ske]
+  yaml_body = templatefile("${path.module}/argocd_template.yaml", {
+    github_repo_url = var.otel_github_repo_url
+    helm_chart_path = "charts/opentelemetry-operator"
+    environment = var.environment
+    resource_name = "otel-operator"
   })
 }
 
@@ -178,5 +188,15 @@ resource "kubectl_manifest" "argocd_prometheus" {
     helm_chart_path = "charts/prometheus"
     environment = var.environment
     resource_name = "prometheus"
+  })
+}
+
+resource "kubectl_manifest" "argocd_jaeger" {
+  depends_on = [helm_release.argocd, stackit_ske_cluster.ske]
+  yaml_body = templatefile("${path.module}/argocd_template.yaml", {
+    github_repo_url = var.jaeger_github_repo_url
+    helm_chart_path = "charts/jaeger"
+    environment = var.environment
+    resource_name = "jaeger"
   })
 }
