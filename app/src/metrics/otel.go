@@ -15,8 +15,6 @@ import (
 )
 
 var (
-	//ServiceName = viper.GetString("otel.serviceName")
-	// collectorURL = viper.GetString("otel.collectorUrl")
 	ServiceName  = "go-api-task-guzel"
 	collectorURL = os.Getenv("OTELCOL_SERVER")
 )

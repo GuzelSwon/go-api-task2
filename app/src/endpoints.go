@@ -4,7 +4,6 @@ import (
 	"app/src/metrics"
 	"errors"
 	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
 	"gorm.io/gorm"
 	"net/http"
 	"os"
@@ -14,12 +13,13 @@ import (
 func (repository *EntitiesRepo) UploadEntitiesToDb(c *gin.Context) {
 	client := NewClient(os.Getenv("URL"))
 	entities := client.FetchEntities()
+	
 	result := repository.Db.Create(entities)
 	recordsCount := result.RowsAffected
 	err := result.Error
 
 	if err != nil {
-		msg := "Failed to upload Entities from " + viper.GetString("http.url") + ": " + err.Error()
+		msg := "Failed to upload Entities from " + os.Getenv("URL") + ": " + err.Error()
 		sendResponseStatusInternalServerError(c, msg)
 		return
 	}
