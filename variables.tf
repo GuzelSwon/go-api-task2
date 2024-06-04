@@ -44,7 +44,7 @@ variable "prometheus_github_repo_url" {
 }
 variable "jaeger_github_repo_url" {
   description = "Github repository URL of jaeger"
-  default = "https://github.com/jaegertracing/helm-charts.git "
+  default = "https://github.com/jaegertracing/helm-charts.git"
 }
 variable "auth_github_username" {
   description = "Github repository URL of an application"
