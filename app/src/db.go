@@ -56,7 +56,7 @@ func openDB(dsn string) *gorm.DB {
 }
 
 func checkIfTableExists(db *gorm.DB) {
-	db.Exec("CREATE TABLE IF NOT EXISTS entities(id INT NOT NULL,slug VARCHAR(30) NOT NULL,url VARCHAR(60) NOT NULL,title VARCHAR(80)  NOT NULL,content VARCHAR(1000)  NOT NULL,image VARCHAR(60)  NOT NULL,thumbnail VARCHAR(60)  NOT NULL,status VARCHAR(60)  NOT NULL,category VARCHAR(60)  NOT NULL,published_at VARCHAR(60)  NOT NULL,updated_at VARCHAR(60)  NOT NULL,user_id INT  NOT NULL,PRIMARY KEY(id));")
+	db.Exec("CREATE TABLE IF NOT EXISTS entities(id INT NOT NULL,slug VARCHAR(30) NOT NULL,url VARCHAR(60) NOT NULL,title VARCHAR(80)  NOT NULL,content VARCHAR(1000)  NOT NULL,image VARCHAR(60)  NOT NULL,thumbnail VARCHAR(60)  NOT NULL,status VARCHAR(60)  NOT NULL,category VARCHAR(60)  NOT NULL,published_at VARCHAR(60)  NOT NULL,updated_at VARCHAR(60)  NOT NULL,user_id INT NOT NULL,PRIMARY KEY(id));")
 }
 
 func CreateNewEntitiesRepo() *EntitiesRepo {
