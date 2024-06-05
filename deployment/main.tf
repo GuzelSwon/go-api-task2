@@ -100,31 +100,8 @@ resource "stackit_secretsmanager_user" "secretsmanager_user" {
   write_enabled = false
 }
 
-resource "kubernetes_secret" "dockerhub-secret" {
-  depends_on = [stackit_ske_cluster.ske]
-  metadata {
-    name      = "dockerhub-secret"
-    namespace = "default"
-  }
- 
-  type = "kubernetes.io/dockerconfigjson"
- 
-  data = {
-    ".dockerconfigjson" = jsonencode({
-      auths = {
-        "${var.registry_url}" = {
-          "username" = var.registry_username,
-          "password" = var.registry_password,
-          "email"    = var.registry_email
-          "auth"     = base64encode("${var.registry_username}:${var.registry_password}")
-        }
-      }
-    })
-  }
-}
-
 resource "kubectl_manifest" "argocd_go_api_app" {
-  depends_on = [kubernetes_secret.dockerhub-secret, kubernetes_secret.repo_access, helm_release.argocd, stackit_ske_cluster.ske]
+  depends_on = [kubernetes_secret.repo_access, helm_release.argocd, stackit_ske_cluster.ske]
   yaml_body = templatefile("${path.module}/argocd_templates/argocd_go-api-app.yaml", {
     github_repo_url = var.go_api_app_github_repo_url
     helm_chart_path = "helm-chart"
@@ -159,32 +136,6 @@ resource "kubectl_manifest" "argocd_fluentbit" {
   })
 }
 
-
-resource "kubectl_manifest" "argocd_otel_collector" {
-  depends_on = [helm_release.argocd, stackit_ske_cluster.ske]
-  yaml_body = templatefile("${path.module}/argocd_templates/argocd_otel_collector.yaml", {
-    github_repo_url = var.otel_github_repo_url
-    helm_chart_path = "charts/opentelemetry-collector"
-    environment = var.environment
-    resource_name = "otel-collector"
-    mode = "daemonset"
-    logs_collector_enabled = "true"
-    logs_collector_include_collector_logs = "true"
-    image_repository = "otel/opentelemetry-collector-k8s"
-  })
-}
-
-resource "kubectl_manifest" "argocd_otel_operator" {
-  depends_on = [helm_release.argocd, stackit_ske_cluster.ske]
-  yaml_body = templatefile("${path.module}/argocd_templates/argocd_otel_operator.yaml", {
-    github_repo_url = var.otel_github_repo_url
-    helm_chart_path = "charts/opentelemetry-operator"
-    environment = var.environment
-    resource_name = "otel-operator"
-    image_repository = "otel/opentelemetry-collector-k8s"
-  })
-}
-
 resource "kubectl_manifest" "argocd_prometheus" {
   depends_on = [helm_release.argocd, stackit_ske_cluster.ske]
   yaml_body = templatefile("${path.module}/argocd_templates/argocd_general.yaml", {
@@ -192,6 +143,16 @@ resource "kubectl_manifest" "argocd_prometheus" {
     helm_chart_path = "charts/prometheus"
     environment = var.environment
     resource_name = "prometheus"
+  })
+}
+
+resource "kubectl_manifest" "argocd_otel" {
+  depends_on = [helm_release.argocd, stackit_ske_cluster.ske]
+  yaml_body = templatefile("${path.module}/argocd_templates/argocd_otel.yaml", {
+    github_repo_url = var.go_api_app_github_repo_url
+    manifest_files_path = "otel"
+    environment = var.environment
+    resource_name = "otel"
   })
 }
 
@@ -204,5 +165,3 @@ resource "kubectl_manifest" "argocd_jaeger" {
     resource_name = "jaeger"
   })
 }
-
-
