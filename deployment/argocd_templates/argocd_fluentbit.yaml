@@ -1,0 +1,80 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ${resource_name}-${environment}
+  namespace: argocd
+spec:
+  destination:
+    namespace: default
+    server: "https://kubernetes.default.svc"
+  project: default
+  syncPolicy:
+    automated: {}
+  source:
+    repoURL: "${github_repo_url}"
+    targetRevision: main
+    path: ${helm_chart_path}
+    helm:
+      valueFiles:
+      - values.yaml
+      values: | 
+        config:
+          filters: |
+            [FILTER]
+                Name modify
+                Match *
+                Rename message content
+                Rename log content
+
+            [FILTER]
+                Name kubernetes
+                Match kube.*
+                Merge_Log On
+                Merge_Log_Trim On
+                Labels Off
+                Annotations Off
+                K8S-Logging.Parser Off
+                K8S-Logging.Exclude Off
+
+
+            [FILTER]
+                Name nest
+                Match kube.*
+                Operation lift
+                Nested_under kubernetes
+                Add_prefix   kubernetes_
+
+            [FILTER]
+                Name grep
+                Match kube.*
+                Exclude kubernetes_container_name fluent-bit
+
+            [FILTER]
+                Name modify
+                Match kube.*
+                Rename log content
+                Rename kubernetes_pod_name k8s.pod.name
+                Rename kubernetes_namespace_name k8s.namespace.name
+                Remove kubernetes_container_image
+                Remove kubernetes_docker_id
+                Remove kubernetes_container_name
+                Remove kubernetes_pod_id
+                Remove kubernetes_host
+                Remove time
+                Remove kubernetes_container_hash
+                Add k8s.cluster.name Onlineboutique
+
+            [FILTER]
+                Name     throttle
+                Match    kube.*
+                Rate     5000
+                Window   5
+                Print_Status true
+                Interval 30s
+          outputs: |
+            [OUTPUT]
+                Name stdout
+                Match kube.*
+                Format json
+                Json_date_key timestamp
+                Json_date_format iso8601

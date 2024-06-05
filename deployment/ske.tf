@@ -5,11 +5,12 @@ resource "stackit_ske_cluster" "ske" {
   node_pools = [
     {
       name               = var.cluster_name
-      machine_type       = "c1.4"
+      machine_type       = "c1.3"
       os_version         = "3815.2.2"
       minimum            = "1"
       maximum            = "1"
       availability_zones = ["eu01-1"]
+      volume_size = "70"
     }
   ]
   maintenance = {

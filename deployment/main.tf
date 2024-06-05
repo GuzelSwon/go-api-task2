@@ -125,7 +125,7 @@ resource "kubernetes_secret" "dockerhub-secret" {
 
 resource "kubectl_manifest" "argocd_go_api_app" {
   depends_on = [kubernetes_secret.dockerhub-secret, kubernetes_secret.repo_access, helm_release.argocd, stackit_ske_cluster.ske]
-  yaml_body = templatefile("${path.module}/argocd_go-api-app.yaml", {
+  yaml_body = templatefile("${path.module}/argocd_templates/argocd_go-api-app.yaml", {
     github_repo_url = var.go_api_app_github_repo_url
     helm_chart_path = "helm-chart"
     environment = var.environment
@@ -139,17 +139,19 @@ resource "kubectl_manifest" "argocd_go_api_app" {
 
 resource "kubectl_manifest" "argocd_postgresql" {
   depends_on = [kubernetes_secret.repo_access, helm_release.argocd, stackit_ske_cluster.ske]
-  yaml_body = templatefile("${path.module}/argocd_template.yaml", {
+  yaml_body = templatefile("${path.module}/argocd_templates/argocd_postgres.yaml", {
     github_repo_url = var.bitnami_github_repo_url
     helm_chart_path = "bitnami/postgresql"
     environment = var.environment
     resource_name = "postgresql"
+    persistentVolumeClaimRetentionPolicy_whenDeleted = "Delete"
+    persistentVolumeClaimRetentionPolicy_whenScaled = "Delete"
   })
 }
 
 resource "kubectl_manifest" "argocd_fluentbit" {
   depends_on = [helm_release.argocd, stackit_ske_cluster.ske]
-  yaml_body = templatefile("${path.module}/argocd_template.yaml", {
+  yaml_body = templatefile("${path.module}/argocd_templates/argocd_fluentbit.yaml", {
     github_repo_url = var.fluentbit_github_repo_url
     helm_chart_path = "charts/fluent-bit"
     environment = var.environment
@@ -157,9 +159,10 @@ resource "kubectl_manifest" "argocd_fluentbit" {
   })
 }
 
+
 resource "kubectl_manifest" "argocd_otel_collector" {
   depends_on = [helm_release.argocd, stackit_ske_cluster.ske]
-  yaml_body = templatefile("${path.module}/argocd_otel_collector.yaml", {
+  yaml_body = templatefile("${path.module}/argocd_templates/argocd_otel_collector.yaml", {
     github_repo_url = var.otel_github_repo_url
     helm_chart_path = "charts/opentelemetry-collector"
     environment = var.environment
@@ -173,7 +176,7 @@ resource "kubectl_manifest" "argocd_otel_collector" {
 
 resource "kubectl_manifest" "argocd_otel_operator" {
   depends_on = [helm_release.argocd, stackit_ske_cluster.ske]
-  yaml_body = templatefile("${path.module}/argocd_otel_operator.yaml", {
+  yaml_body = templatefile("${path.module}/argocd_templates/argocd_otel_operator.yaml", {
     github_repo_url = var.otel_github_repo_url
     helm_chart_path = "charts/opentelemetry-operator"
     environment = var.environment
@@ -184,7 +187,7 @@ resource "kubectl_manifest" "argocd_otel_operator" {
 
 resource "kubectl_manifest" "argocd_prometheus" {
   depends_on = [helm_release.argocd, stackit_ske_cluster.ske]
-  yaml_body = templatefile("${path.module}/argocd_template.yaml", {
+  yaml_body = templatefile("${path.module}/argocd_templates/argocd_general.yaml", {
     github_repo_url = var.prometheus_github_repo_url
     helm_chart_path = "charts/prometheus"
     environment = var.environment
@@ -194,10 +197,12 @@ resource "kubectl_manifest" "argocd_prometheus" {
 
 resource "kubectl_manifest" "argocd_jaeger" {
   depends_on = [helm_release.argocd, stackit_ske_cluster.ske]
-  yaml_body = templatefile("${path.module}/argocd_template.yaml", {
+  yaml_body = templatefile("${path.module}/argocd_templates/argocd_general.yaml", {
     github_repo_url = var.jaeger_github_repo_url
     helm_chart_path = "charts/jaeger"
     environment = var.environment
     resource_name = "jaeger"
   })
 }
+
+
