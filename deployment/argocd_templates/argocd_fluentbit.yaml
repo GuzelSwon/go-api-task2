@@ -62,7 +62,7 @@ spec:
                 Remove kubernetes_host
                 Remove time
                 Remove kubernetes_container_hash
-                Add k8s.cluster.name Onlineboutique
+                Add k8s.cluster.name cl-ythb0xi4
 
             [FILTER]
                 Name     throttle
